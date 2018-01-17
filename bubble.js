@@ -18,11 +18,11 @@
 
 
 
-  var radiusScale = d3.scaleSqrt().domain([1, 300]).range([10,80]); //make square root scale because it is the radius of the circle
-    //domain - 1 is min and 300 is max from our data set
-    //domain is range of all the possible input data values
-    //range - smallest circle radius and largest circle radius
-    //range is possible output range
+  var radiusScale = d3.scaleSqrt().domain([1, 220]).range([10,80]); //make square root scale because it is the radius of the circle
+  //domain - 1 is min and 300 is max from our data set
+  //domain is range of all the possible input data values
+  //range - smallest circle radius and largest circle radius
+  //range is possible output range
 
 
 
@@ -39,7 +39,7 @@
       .force("x", d3.forceX(width/2).strength(0.05)) //use x force to push everything to the middle
       .force("y", d3.forceY(height/2).strength(0.05))
       .force("collide", d3.forceCollide(function(d){
-        return radiusScale(d.sales)+1;
+        return radiusScale(d.market_cap_rounded)+1;
       })); //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
           //want every circle to have different collision force
           //+1 adds the spacing
@@ -58,24 +58,24 @@
     //5. everytime tick happens, simulation will look at all forces applied and will see where the nodes have to be
           //have a force that tries to push all x's to the middle
 
-    defs.selectAll(".artist-pattern")
-      .data(datapoints)
-      .enter().append("pattern")
-      .attr("class", "artist-pattern") //need to change
-      .attr("id",function(d){
-        return d.name;
-      })
-      .attr("height", "100%")
-      .attr("width", "100%")
-      .attr("patternContentUnits", "objectBoundingBox")
-      .append("image")
-      .attr("height",1)
-      .attr("width", 1)
-      .attr("preserveAspectRatio","none")
-      .attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-      .attr("xlink:href",function(d){
-        return "bitcoin.png";
-      });
+    // defs.selectAll(".artist-pattern")
+    //   .data(datapoints)
+    //   .enter().append("pattern")
+    //   .attr("class", "artist-pattern") //need to change
+    //   .attr("id",function(d){
+    //     return d.name;
+    //   })
+    //   .attr("height", "100%")
+    //   .attr("width", "100%")
+    //   .attr("patternContentUnits", "objectBoundingBox")
+    //   .append("image")
+    //   .attr("height",1)
+    //   .attr("width", 1)
+    //   .attr("preserveAspectRatio","none")
+    //   .attr("xmlns:xlink","http://www.w3.org/1999/xlink")
+    //   .attr("xlink:href",function(d){
+    //     return "bitcoin.png";
+    //   });
 
     //artist class doesn't exist so empty selection is returned
     //all the datapoints will be binded to the enter placeholders
@@ -88,17 +88,16 @@
       .append("circle")
       .attr("class", "artist")
       .attr("r", function(d){
-        return radiusScale(d.sales);
+        return radiusScale(d.market_cap_rounded);
       })
       .attr("fill", function(d){
-        return "url(#bitcoin)";
+        return "lightblue";
       })
       .attr("cx", 100)
       .attr("cy", 300)
       .on('click',function(d){
         console.log(d);
       });
-
 
 
 
