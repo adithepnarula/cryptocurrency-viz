@@ -1,6 +1,7 @@
+
 (function(){
 
-  let width = 500;
+  let width = 900;
   let height = 500;
 
   //no need margin for force diagram
@@ -25,7 +26,6 @@
   //range is possible output range
 
 
-
   //create a force simulation - takes every circle and applies forces to them to get them to go to a certain place
   //we want all of ours to go towards the center
   //create simulation and use it later
@@ -35,12 +35,26 @@
 
   //step 1: get them to the middle
   //step 2: don't have them collide
+
+  let forceXSplit = d3.forceX(function(d){
+    if(d.market_cap_rounded > 100){
+      return 100;
+    }else{
+      return 700;
+    }
+  });
+
+  let forceXCombine = d3.forceX(width/2).strength(0.05);
+
+  let forceCollide = d3.forceCollide(function(d){
+    return radiusScale(d.market_cap_rounded)+1;
+  });
+
+
   var simulation = d3.forceSimulation()
-      .force("x", d3.forceX(width/2).strength(0.05)) //use x force to push everything to the middle
+      .force("x", forceXCombine) //use x force to push to either middle or the sides, depending on data element
       .force("y", d3.forceY(height/2).strength(0.05))
-      .force("collide", d3.forceCollide(function(d){
-        return radiusScale(d.market_cap_rounded)+1;
-      })); //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
+      .force("collide", forceCollide); //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
           //want every circle to have different collision force
           //+1 adds the spacing
           //"x","y","collide" can be called anything
@@ -58,24 +72,6 @@
     //5. everytime tick happens, simulation will look at all forces applied and will see where the nodes have to be
           //have a force that tries to push all x's to the middle
 
-    // defs.selectAll(".artist-pattern")
-    //   .data(datapoints)
-    //   .enter().append("pattern")
-    //   .attr("class", "artist-pattern") //need to change
-    //   .attr("id",function(d){
-    //     return d.name;
-    //   })
-    //   .attr("height", "100%")
-    //   .attr("width", "100%")
-    //   .attr("patternContentUnits", "objectBoundingBox")
-    //   .append("image")
-    //   .attr("height",1)
-    //   .attr("width", 1)
-    //   .attr("preserveAspectRatio","none")
-    //   .attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-    //   .attr("xlink:href",function(d){
-    //     return "bitcoin.png";
-    //   });
 
     //artist class doesn't exist so empty selection is returned
     //all the datapoints will be binded to the enter placeholders
@@ -86,19 +82,18 @@
       .data(datapoints)
       .enter()
       .append("circle")
-      .attr("class", "artist")
-      .attr("r", function(d){
-        return radiusScale(d.market_cap_rounded);
-      })
-      .attr("fill", function(d){
-        return "lightblue";
-      })
-      .attr("cx", 100)
-      .attr("cy", 300)
+        .attr("class", "artist")
+        .attr("r", function(d){
+          return radiusScale(d.market_cap_rounded);
+        })
+        .attr("fill", function(d){
+          return d.background_color;
+        })
+        .attr("cx", 100)
+        .attr("cy", 300)
       .on('click',function(d){
         console.log(d);
       });
-
 
 
     simulation.nodes(datapoints).on('tick', ticked); //every node is one of the circles
@@ -112,8 +107,22 @@
       .attr("cy",function(d){
         return d.y;
       });
-
     }
+
+    //overwriting the force in this function
+    d3.select('#split').on('click',function(){
+      simulation
+        .force("x", forceXSplit)
+        .alphaTarget(0.25) //give an alphaTarget and restart simulation
+        .restart();
+    });
+
+    d3.select('#combine').on('click',function(){
+      simulation
+        .force("x", forceXCombine)
+        .alphaTarget(0.25)
+        .restart();
+    });
 
 
   }
@@ -125,3 +134,28 @@
 
 
 })();
+
+
+
+
+
+
+
+// defs.selectAll(".artist-pattern")
+//   .data(datapoints)
+//   .enter().append("pattern")
+//   .attr("class", "artist-pattern") //need to change
+//   .attr("id",function(d){
+//     return d.name;
+//   })
+//   .attr("height", "100%")
+//   .attr("width", "100%")
+//   .attr("patternContentUnits", "objectBoundingBox")
+//   .append("image")
+//   .attr("height",1)
+//   .attr("width", 1)
+//   .attr("preserveAspectRatio","none")
+//   .attr("xmlns:xlink","http://www.w3.org/1999/xlink")
+//   .attr("xlink:href",function(d){
+//     return "bitcoin.png";
+//   });
