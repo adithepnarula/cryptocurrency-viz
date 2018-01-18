@@ -1,12 +1,6 @@
 
 (function(){
 
-  // console.log("about to send ajax..");
-  // d3.json('https://api.coinmarketcap.com/v1/ticker/', function(error, response){
-  //   console.log(response);
-  // });
-
-  console.log("about to make polling request...");
   (function poll(){
    setTimeout(function(){
       $.ajax({ url: "https://api.coinmarketcap.com/v1/ticker/", success: function(data){
@@ -23,7 +17,7 @@
 
 
   let width = 900;
-  let height = 600;
+  let height = 900;
 
   //no need margin for force diagram
   let svg = d3.select('#chart')
@@ -33,11 +27,6 @@
             .append("g")
             .attr("transform", "translate(0,0)");
             //will push everything down to have the middle point be (0,0) if i change translate (width/2, height/2)
-
-  //adding image to coin
-  //creating definition and added pattern, then added image
-  var defs = svg.append("defs"); //add defs tag to svg
-
 
 
   var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([15,100]); //make square root scale because it is the radius of the circle
@@ -57,28 +46,40 @@
   //step 1: get them to the middle
   //step 2: don't have them collide
 
-  let forceXSplit = d3.forceX(function(d){
-    if(d.market_cap_rounded > 100){
+
+  var center = { x: width / 2, y: height / 2 };
+  var forceStrength = 0.05;
+
+  let forceYSplit = d3.forceY(function(d){
+    if(parseInt(d.percent_change_1h) >= 0){
       return 100;
     }else{
-      return 700;
+      return 800;
     }
   });
 
-  let forceXCombine = d3.forceX(width/2).strength(0.05);
+  function charge(d) {
+   return -Math.pow(d.radius, 2.0) * forceStrength;
+  }
+
+  let forceXCombine = d3.forceX(center.x).strength(0.05);
+  let forceYCombine = d3.forceY(center.y).strength(0.05);
 
   let forceCollide = d3.forceCollide(function(d){
     return radiusScale(d.market_cap_rounded)+2;
   });
 
+  //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
+    //     //want every circle to have different collision force
+    //     //+1 adds the spacing
+    //     //"x","y","collide" can be called anything
+
 
   var simulation = d3.forceSimulation()
       .force("x", forceXCombine) //use x force to push to either middle or the sides, depending on data element
-      .force("y", d3.forceY(height/2).strength(0.05))
-      .force("collide", forceCollide); //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
-          //want every circle to have different collision force
-          //+1 adds the spacing
-          //"x","y","collide" can be called anything
+      .force("y", forceYCombine)
+      .force("collide", forceCollide);
+
 
   d3.queue()
     .defer(d3.csv, "crypto_data.csv")
@@ -91,30 +92,7 @@
     //3. create simulation for all datas
     //4. everytime there is a tick of the clock, run reposition function
     //5. everytime tick happens, simulation will look at all forces applied and will see where the nodes have to be
-          //have a force that tries to push all x's to the middle
-
-
-    //artist class doesn't exist so empty selection is returned
-    //all the datapoints will be binded to the enter placeholders
-    //each circle will replace placeholder with _data bindinded, each having a class "artist" with radius 10
-
-
-    // var elem = svg.selectAll("g myCircleText")
-    //               .data(datapoints);
-    //
-    // var elemEnter = elem.enter()
-    //               .append("g");
-    //               // .attr("transform", function(d){return "translate(200,200)";});
-    //
-    // var circles = elemEnter.append('circle')
-    //             .attr("r", function(d){return 20;} )
-    //             .attr("stroke","black")
-    //             .attr("fill", "white");
-    // /* Create the text for each block */
-    // elemEnter.append("text")
-    //   .attr("dx", function(d){return 200;})
-    //   .text("hello");
-
+          //have a force t to the simulation that tries to push all x's to the middle
 
     var circles = svg.selectAll(".artist")
       .data(datapoints)
@@ -133,10 +111,13 @@
           console.log(d);
         });
 
+    //datapoints are nodes, which are input to simulation
+    //it has all the data from csv tied to it, and also x,y, vx, vy
     simulation.nodes(datapoints).on('tick', ticked); //every node is one of the circles
 
     //When we feed the datapoints to simulation, it will automatically call this function and update the cx,cy
     //because we registed the tick event
+    //this function does the actual repositioning based on current x, y values
     function ticked(){
       circles.attr("cx", function(d){
         return d.x;
@@ -144,14 +125,16 @@
       .attr("cy",function(d){
         return d.y;
       });
-
-
     }
+
+    //each force (forceCombine, forceXSplit) is a function that gets called during each tick
+    //of the simulation. its job is to modify the position of some or all nodes in the simulation.
+    //before
 
     //overwriting the force in this function
     d3.select('#split').on('click',function(){
       simulation
-        .force("x", forceXSplit)
+        .force("y", forceYSplit)
         .alphaTarget(0.25) //give an alphaTarget and restart simulation
         .restart();
     });
@@ -159,6 +142,7 @@
     d3.select('#combine').on('click',function(){
       simulation
         .force("x", forceXCombine)
+        .force("y", forceYCombine)
         .alphaTarget(0.25)
         .restart();
     });
@@ -174,27 +158,15 @@
 
 })();
 
-
-
-
-
-
-
-// defs.selectAll(".artist-pattern")
-//   .data(datapoints)
-//   .enter().append("pattern")
-//   .attr("class", "artist-pattern") //need to change
-//   .attr("id",function(d){
-//     return d.name;
-//   })
-//   .attr("height", "100%")
-//   .attr("width", "100%")
-//   .attr("patternContentUnits", "objectBoundingBox")
-//   .append("image")
-//   .attr("height",1)
-//   .attr("width", 1)
-//   .attr("preserveAspectRatio","none")
-//   .attr("xmlns:xlink","http://www.w3.org/1999/xlink")
-//   .attr("xlink:href",function(d){
-//     return "bitcoin.png";
-//   });
+// var myBubbleChart = bubbleChart();
+//
+// function display(error, data){
+//   if(error){
+//     console.log(err);
+//   }
+//   myBubbleChart('#vis',data);
+// }
+//
+// document.addEventListener('DOMContentLoaded',function(){
+//   d3.csv('crypto_data.csv', display);
+// });
