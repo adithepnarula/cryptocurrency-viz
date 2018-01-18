@@ -5,14 +5,15 @@
    setTimeout(function(){
       $.ajax({ url: "https://api.coinmarketcap.com/v1/ticker/", success: function(data){
 
-        console.log(data);
         //Update your dashboard gauge
         // salesGauge.setValue(data.value);
-
+        let nodes = createNodes(data);
+        console.log("nodes are..");
+        console.log(nodes);
         //Setup the next poll recursively
         poll();
       }, dataType: "json"});
-    }, 10000);
+    }, 3000);
   })();
 
 
@@ -48,13 +49,14 @@
 
 
   var center = { x: width / 2, y: height / 2 };
+
   var forceStrength = 0.05;
 
   let forceYSplit = d3.forceY(function(d){
     if(parseInt(d.percent_change_1h) >= 0){
-      return 100;
+      return 200;
     }else{
-      return 800;
+      return 700;
     }
   });
 
@@ -65,14 +67,14 @@
   let forceXCombine = d3.forceX(center.x).strength(0.05);
   let forceYCombine = d3.forceY(center.y).strength(0.05);
 
-  let forceCollide = d3.forceCollide(function(d){
-    return radiusScale(d.market_cap_rounded)+2;
-  });
-
   //put radius for collision to avoid. If radius of circle matches squares, won't have overlap
     //     //want every circle to have different collision force
     //     //+1 adds the spacing
     //     //"x","y","collide" can be called anything
+
+  let forceCollide = d3.forceCollide(function(d){
+    return radiusScale(d.market_cap_rounded)+2;
+  });
 
 
   var simulation = d3.forceSimulation()
@@ -81,9 +83,34 @@
       .force("collide", forceCollide);
 
 
+  function createNodes(rawData){
+    var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([15,100]); //make square root scale because it is the radius of the circle
+    var myNodes = rawData.map(function (d) {
+
+     let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
+
+     return {
+       id: d.id,
+       market_cap_rounded: market_cap_rounded,
+       radius: radiusScale(market_cap_rounded),
+       x: Math.random() * 100,
+       y: Math.random() * 300
+     };
+    });
+
+    // sort them to prevent occlusion of smaller nodes.
+    myNodes.sort(function (a, b) { return b.market_cap_rounded - a.market_cap_rounded; });
+    return myNodes;
+  }
+
+
+
   d3.queue()
     .defer(d3.csv, "crypto_data.csv")
     .await(ready);
+
+
+
 
   //need to run python server to get this to work
   function ready(error, datapoints){
@@ -93,6 +120,7 @@
     //4. everytime there is a tick of the clock, run reposition function
     //5. everytime tick happens, simulation will look at all forces applied and will see where the nodes have to be
           //have a force t to the simulation that tries to push all x's to the middle
+
 
     var circles = svg.selectAll(".artist")
       .data(datapoints)
@@ -158,15 +186,15 @@
 
 })();
 
-// var myBubbleChart = bubbleChart();
-//
-// function display(error, data){
-//   if(error){
-//     console.log(err);
-//   }
-//   myBubbleChart('#vis',data);
-// }
-//
-// document.addEventListener('DOMContentLoaded',function(){
-//   d3.csv('crypto_data.csv', display);
-// });
+
+
+function display(error, data){
+  if(error){
+    console.log(err);
+  }
+  myBubbleChart('#vis',data);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  d3.csv('crypto_data.csv', display);
+});
