@@ -1,10 +1,25 @@
 
 (function(){
 
-  console.log("about to send ajax..");
-  d3.json('https://api.coinmarketcap.com/v1/ticker/', function(error, response){
-    console.log(response);
-  });
+  // console.log("about to send ajax..");
+  // d3.json('https://api.coinmarketcap.com/v1/ticker/', function(error, response){
+  //   console.log(response);
+  // });
+
+  console.log("about to make polling request...");
+  (function poll(){
+   setTimeout(function(){
+      $.ajax({ url: "https://api.coinmarketcap.com/v1/ticker/", success: function(data){
+
+        console.log(data);
+        //Update your dashboard gauge
+        // salesGauge.setValue(data.value);
+
+        //Setup the next poll recursively
+        poll();
+      }, dataType: "json"});
+    }, 10000);
+  })();
 
 
   let width = 900;
