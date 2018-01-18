@@ -1,8 +1,9 @@
 
 (function(){
 
+  console.log("test");
   let width = 900;
-  let height = 500;
+  let height = 600;
 
   //no need margin for force diagram
   let svg = d3.select('#chart')
@@ -19,7 +20,7 @@
 
 
 
-  var radiusScale = d3.scaleSqrt().domain([1, 220]).range([10,80]); //make square root scale because it is the radius of the circle
+  var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([15,100]); //make square root scale because it is the radius of the circle
   //domain - 1 is min and 300 is max from our data set
   //domain is range of all the possible input data values
   //range - smallest circle radius and largest circle radius
@@ -47,7 +48,7 @@
   let forceXCombine = d3.forceX(width/2).strength(0.05);
 
   let forceCollide = d3.forceCollide(function(d){
-    return radiusScale(d.market_cap_rounded)+1;
+    return radiusScale(d.market_cap_rounded)+2;
   });
 
 
@@ -77,7 +78,24 @@
     //all the datapoints will be binded to the enter placeholders
     //each circle will replace placeholder with _data bindinded, each having a class "artist" with radius 10
 
-    //for each data point create a circle
+
+    // var elem = svg.selectAll("g myCircleText")
+    //               .data(datapoints);
+    //
+    // var elemEnter = elem.enter()
+    //               .append("g");
+    //               // .attr("transform", function(d){return "translate(200,200)";});
+    //
+    // var circles = elemEnter.append('circle')
+    //             .attr("r", function(d){return 20;} )
+    //             .attr("stroke","black")
+    //             .attr("fill", "white");
+    // /* Create the text for each block */
+    // elemEnter.append("text")
+    //   .attr("dx", function(d){return 200;})
+    //   .text("hello");
+
+
     var circles = svg.selectAll(".artist")
       .data(datapoints)
       .enter()
@@ -91,10 +109,9 @@
         })
         .attr("cx", 100)
         .attr("cy", 300)
-      .on('click',function(d){
-        console.log(d);
-      });
-
+        .on('click',function(d){
+          console.log(d);
+        });
 
     simulation.nodes(datapoints).on('tick', ticked); //every node is one of the circles
 
@@ -107,6 +124,8 @@
       .attr("cy",function(d){
         return d.y;
       });
+
+
     }
 
     //overwriting the force in this function

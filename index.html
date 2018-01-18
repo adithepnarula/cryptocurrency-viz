@@ -4,15 +4,33 @@
     <meta charset="utf-8">
     <title></title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
+      <link rel="stylesheet" href="lib/stylesheets/reset.css">
+    <link rel="stylesheet" href="lib/stylesheets/main.css">
   </head>
   <body>
 
-    <button id="split"> split </button>
-    <button id="combine"> combine </button>
+    <div class="grid-container">
 
-    <div id="chart"></div>
-    <!-- include actual visualization -->
-    <script src="bubble.js"></script>
+      <div class="buttonsbar">
+      </div>
+
+      <div class="sidebar">
+      </div>
+
+      <div class="chart-container">
+
+        <button id="split"> split </button>
+        <button id="combine"> combine </button>
+        <div id="chart"></div>
+        <!-- include actual visualization -->
+        <script src="bubble.js"></script>
+      </div>
+
+
+    </div>
+
+
+
 
   </body>
 </html>
