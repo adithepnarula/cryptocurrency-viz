@@ -159,7 +159,7 @@
 //
 // })();
 
-var myBubbleChart = bubbleChart();
+
 
 function bubbleChart(){
 
@@ -176,6 +176,7 @@ function bubbleChart(){
 
   var center = { x: width / 2, y: height / 2 };
   var forceStrength = 0.05;
+
   let forceYSplit = d3.forceY(function(d){
     if(parseInt(d.percent_change_1h) >= 0){
       return 200;
@@ -184,23 +185,28 @@ function bubbleChart(){
     }
   });
 
-  let forceXCombine = d3.forceX(center.x).strength(0.05);
-  let forceYCombine = d3.forceY(center.y).strength(0.05);
-
   //use to set distance between nodes so there won't be collision
   var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([15,100]); //make square root scale because it is the radius of the circle
 
-
+  let forceXCenter = d3.forceX().strength(forceStrength).x(center.x);
+  let forceYCenter = d3.forceY().strength(forceStrength).y(center.y);
   //data will be available because forceCollide is called inside after simulation nodes
   let forceCollide = d3.forceCollide(function(d){
     return radiusScale(d.market_cap_rounded)+2;
   });
 
+  function charge(d) {
+    return -Math.pow(d.radius, 2.0) * forceStrength;
+  }
+
+
 
   var simulation = d3.forceSimulation()
-      .force("x", forceXCombine) //use x force to push to either middle or the sides, depending on data element
-      .force("y", forceYCombine)
+      .velocityDecay(0.2)
+      .force('x', forceXCenter)
+      .force('y', forceYCenter)
       .force("collide", forceCollide)
+      .force('charge', d3.forceManyBody().strength(charge))
       .on('tick', ticked);
 
   simulation.stop();
@@ -208,12 +214,13 @@ function bubbleChart(){
 
   function createNodes(rawData){
     var myNodes = rawData.map(function (d) {
-
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
         id: d.id,
         market_cap_rounded: market_cap_rounded,
         radius: radiusScale(market_cap_rounded),
+        price: d.price_usd,
+        percent_change_10s: d.percent_change_1h,
         x: 100,
         y: 300
       };
@@ -227,18 +234,16 @@ function bubbleChart(){
 
 
   var chart = function chart(selector, rawData){
-    // convert raw data into nodes data
+    // convert raw data into array of objects containing data
     nodes = createNodes(rawData);
-    console.log("nodes are.. updated");
-    console.log(nodes);
     svg = d3.select(selector)
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height);
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
 
     // Bind nodes data to what will become DOM elements to represent them.
     bubbles = svg.selectAll('.bubble')
-    .data(nodes, function (d) { return d.id; });
+            .data(nodes, function (d) { return d.id; });
 
     var bubblesE = bubbles.enter().append('circle')
     .classed('bubble', true)
@@ -258,10 +263,41 @@ function bubbleChart(){
     // Set initial layout to single group.
     groupBubbles();
 
+    //for updating nodes
+    //because of closure this function will have access to all things in this function
+    return function(pricePath){
+      console.log("in update...");
+      console.log(pricePath);
+      //continously call updates
+      (function poll(){
+       setTimeout(function(){
+          $.ajax({ url: pricePath, success: function(data){
+            console.log('success!');
+            console.log(data);
+            poll();
+          }, dataType: "json"});
+        }, 3000);
+      })();
+
+      // bubbles = svg.selectAll('circle')
+      //           .data()
+      //
+      //
+      // console.log('in update nodes');
+      // bubbles
+      //   .attr('cx', function(d){
+      //     return 200;
+      //   })
+      //   .attr('cx', function(d){
+      //     return 200;
+      //   });
+    };
+
   };
 
   function ticked() {
-    bubbles.attr('cx', function (d) { return d.x; })
+    bubbles
+      .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; });
   }
 
@@ -270,7 +306,7 @@ function bubbleChart(){
   * chart.toggleDisplay will be called outside to adjust the force by passing in a displayName
   */
   chart.toggleDisplay = function (displayName) {
-    if (displayName === 'year') {
+    if (displayName === 'split') {
       splitBubbles();
     } else {
       groupBubbles();
@@ -278,11 +314,9 @@ function bubbleChart(){
   };
 
   function groupBubbles(){
-    simulation.force("x", forceXCombine)
-      .force("y", forceYCombine);
-
-    console.log('group bubbles');
-    console.log(nodes);
+    simulation
+      .force("x", forceXCenter)
+      .force("y", forceYCenter);
 
     simulation.alpha(1).restart(); //reset alpha to restart simulation
   }
@@ -292,21 +326,73 @@ function bubbleChart(){
     simulation.alpha(1).restart();
   }
 
-  /**
-  * returns chart to
-  */
   return chart;
-
 }
+
+
+var myBubbleChart = bubbleChart(); //chart gets returned
+//need to set to global var because it has toggleDisplay property
+
+var updateNodes = null;
 
 
 function display(error, data){
   if(error){
     console.log(err);
   }
-  myBubbleChart('#chart', data);
+  pricePath = priceUrlPath(data);
+  updateNodes = myBubbleChart('#chart', data); //display
+  updateNodes(pricePath);
+
 }
+
+
+function priceUrlPath(rawData){
+  var symbols = rawData.map(function (d) {
+    return d.symbol;
+  });
+
+  //get top 65
+  symbols = symbols.slice(0,65).join(",");
+  path = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+symbols+'&tsyms=USD';
+  console.log("path is");
+  console.log(path);
+  return path;
+}
+
 
 d3.json('https://api.coinmarketcap.com/v1/ticker/', display);
 
-// d3.csv('crypto_data.csv', display);
+
+
+
+
+/** SETTING UP BUTTONS **/
+
+//set up buttons
+setupButtons();
+
+/*
+ * Sets up the layout buttons to allow for toggling between view modes.
+ */
+function setupButtons() {
+  d3.select('.buttonsbar')
+    .selectAll('.button')
+    .on('click', function () {
+      // Remove active class from all buttons
+      d3.selectAll('.button').classed('active', false);
+
+      // Find the button just clicked
+      var button = d3.select(this);
+
+      // Set it as the active button
+      button.classed('active', true);
+
+      // Get the id of the button
+      var buttonId = button.attr('id');
+
+      // Toggle the bubble chart based on
+      // the currently clicked button.
+      myBubbleChart.toggleDisplay(buttonId);
+    });
+}
