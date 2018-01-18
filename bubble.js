@@ -1,7 +1,12 @@
 
 (function(){
 
-  console.log("test");
+  console.log("about to send ajax..");
+  d3.json('https://api.coinmarketcap.com/v1/ticker/', function(error, response){
+    console.log(response);
+  });
+
+
   let width = 900;
   let height = 600;
 
