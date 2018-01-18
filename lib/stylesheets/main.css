@@ -7,13 +7,28 @@ body {
   width: 100%;
   display: grid;
   grid-template-columns: 100px 250px auto;
-
 }
 
 .buttonsbar{
   background-color: #292C33;
   grid-column-start: 1;
   box-shadow: 5px 0 5px -5px #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button{
+  width: 60px;
+  height: 60px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #42454B;
+  color: #ABB2BF;
+  border-color: transparent;
+  margin: 20px 0;
+
 }
 
 .sidebar{

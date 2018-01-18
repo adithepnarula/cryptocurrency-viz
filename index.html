@@ -6,21 +6,23 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
       <link rel="stylesheet" href="lib/stylesheets/reset.css">
     <link rel="stylesheet" href="lib/stylesheets/main.css">
+      <script src="https://use.fontawesome.com/6cd5930f25.js"></script>
   </head>
   <body>
 
     <div class="grid-container">
 
       <div class="buttonsbar">
+        <button id="split"> <i class="fa fa-btc fa-3x" aria-hidden="true"></i>
+ </button>
+        <button id="combine"> <i class="fa fa-percent fa-2x" aria-hidden="true"></i>
+</button>
       </div>
 
       <div class="sidebar">
       </div>
 
       <div class="chart-container">
-
-        <button id="split"> split </button>
-        <button id="combine"> combine </button>
         <div id="chart"></div>
         <!-- include actual visualization -->
         <script src="bubble.js"></script>
