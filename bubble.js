@@ -69,6 +69,9 @@ function bubbleChart(){
         radius: radiusScale(market_cap_rounded),
         price: d.price_usd,
         percent_change_10s: d.percent_change_1h,
+        percent_change_1h: d.percent_change_1h,
+        percent_change_24h: d.percent_change_24h,
+        percent_change_7d: d.percent_change_7d,
         x: 100,
         y: 300
       };
@@ -136,12 +139,12 @@ function bubbleChart(){
           newPrice = priceData[symbol].USD;
           nodes[i].percent_change_10s = percentChange(nodes[i].price, newPrice);
 
-          if(symbol === 'IOTA'){
-            console.log('IOTA');
-            console.log('old price = ' + nodes[i].price);
-            console.log('new price = ' + newPrice);
-            console.log('percent change = ' + nodes[i].percent_change_10s);
-          }
+          // if(symbol === 'IOTA'){
+          //   console.log('IOTA');
+          //   console.log('old price = ' + nodes[i].price);
+          //   console.log('new price = ' + newPrice);
+          //   console.log('percent change = ' + nodes[i].percent_change_10s);
+          // }
 
           nodes[i].price = newPrice;
 
@@ -191,7 +194,7 @@ function bubbleChart(){
       state = 'percent';
       percentBubbles();
     } else {
-      state = 'market-cap';
+      state = 'marketCap';
       groupBubbles();
     }
   };
@@ -205,6 +208,8 @@ function bubbleChart(){
   }
 
   function percentBubbles() {
+    // showPriceChangeTitles();
+    updateSideBar('percent');
     simulation.force("y", forceYSplit);
     simulation.alpha(1).restart();
   }
@@ -240,6 +245,21 @@ function bubbleChart(){
     tooltip.hideTooltip();
   }
 
+  function showPriceChangeTitles() {
+  // Another way to do this would be to create
+  // the year texts once and then just hide them.
+    var priceData = ['up', 'same', 'down'];
+    var price = svg.selectAll('.price')
+      .data(priceData);
+
+    price.enter().append('text')
+      .attr('class', 'year')
+      .attr('x', function (d) { return 200; })
+      .attr('y', 40)
+      .attr('text-anchor', 'middle')
+      .text(function (d) { return d; });
+  }
+
 
 
   return chart;
@@ -250,7 +270,7 @@ var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
 var numCryptos = 65;
-var state = 'market-cap'; //set state on what to show
+var state = 'marketCap'; //set state on what to show
 
 function display(error, data){
   if(error){
