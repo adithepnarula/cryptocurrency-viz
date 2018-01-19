@@ -1,3 +1,5 @@
+//Tooltip created by Jim Vallandingham
+
 /*
  * Creates tooltip with provided id that
  * floats on top of visualization.

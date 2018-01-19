@@ -60,7 +60,6 @@ function bubbleChart(){
 
 
   function createNodes(rawData){
-    rawData = rawData.slice(0,numCryptos);
     var myNodes = rawData.map(function (d) {
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
@@ -127,14 +126,18 @@ function bubbleChart(){
       let nodes = oldBubbles.data();
 
       for(let i = 0; i < nodes.length; i++){
+        let symbol = nodes[i].symbol;
+        if(symbol === 'MIOTA'){
+          symbol = 'IOTA';
+        }
 
-        if(priceData[nodes[i].symbol]){
+        if(priceData[symbol]){
 
-          newPrice = priceData[nodes[i].symbol].USD;
+          newPrice = priceData[symbol].USD;
           nodes[i].percent_change_10s = percentChange(nodes[i].price, newPrice);
 
-          if(nodes[i].symbol === 'BTC'){
-            console.log('BTC');
+          if(symbol === 'IOTA'){
+            console.log('IOTA');
             console.log('old price = ' + nodes[i].price);
             console.log('new price = ' + newPrice);
             console.log('percent change = ' + nodes[i].percent_change_10s);
@@ -142,6 +145,8 @@ function bubbleChart(){
 
           nodes[i].price = newPrice;
 
+        }else{
+          console.log("symbol not in: " + symbol);
         }
       }
 
@@ -165,7 +170,7 @@ function bubbleChart(){
             updateBubbles(priceData);
             poll();
           }, dataType: "json"});
-        }, 15000);
+        }, 30000);
       })();
     };
 
@@ -209,7 +214,6 @@ function bubbleChart(){
    * details of a bubble in the tooltip.
    */
   function showDetail(d) {
-    console.log('in showDetail');
     console.log(d.price);
     // change outline to indicate hover state.
     d3.select(this).attr('stroke', 'black');
@@ -223,8 +227,6 @@ function bubbleChart(){
                   '<span class="name">Year: </span><span class="value">' +
                   d.price +
                   '</span>';
-    console.log("content is = ");
-    console.log(content);
     tooltip.showTooltip(content, d3.event);
   }
 
@@ -235,7 +237,6 @@ function bubbleChart(){
     // reset outline
     d3.select(this)
       .attr('stroke', d3.rgb(fillColor('low')).darker());
-    console.log('in hide detail');
     tooltip.hideTooltip();
   }
 
@@ -255,6 +256,7 @@ function display(error, data){
   if(error){
     console.log(err);
   }
+  data = data.slice(0, numCryptos); //get 65 cryptos
   pricePath = priceUrlPath(data);
   let updateNodes = myBubbleChart('#chart', data); //display
   updateNodes(pricePath,data); //update price every 10 seconds
@@ -262,16 +264,17 @@ function display(error, data){
 
 
 function priceUrlPath(rawData){
-  rawData = rawData.slice(0,numCryptos);
   var symbols = rawData.map(function (d) {
-    return d.symbol;
+    if(d.symbol==='MIOTA'){
+      return 'IOTA'; //coinmarketcap has IOTA symbol has MIOTA but cryptocompare has IOTA
+    }else{
+      return d.symbol;
+    }
   });
-
-  //get first 65
-  // symbols = symbols.slice(0,numCryptos).join(",");
   symbols = symbols.join(",");
   path = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+symbols+'&tsyms=USD';
   return path;
+
 }
 
 
