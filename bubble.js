@@ -217,6 +217,7 @@ function bubbleChart(){
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
         id: d.id,
+        symbol: d.symbol,
         market_cap_rounded: market_cap_rounded,
         radius: radiusScale(market_cap_rounded),
         price: d.price_usd,
@@ -248,7 +249,10 @@ function bubbleChart(){
     var bubblesE = bubbles.enter().append('circle')
     .classed('bubble', true)
     .attr('r', 0)
-    .attr('fill', function (d) { return "lightblue"; });
+    .attr('fill', function (d) { return "lightblue"; })
+    .on('click',function(d){
+      console.log(d);
+    });
 
     bubbles = bubbles.merge(bubblesE);
 
@@ -263,34 +267,39 @@ function bubbleChart(){
     // Set initial layout to single group.
     groupBubbles();
 
+
+    function updateBubbles(priceData){
+
+      let oldBubbles = svg.selectAll('circle');
+      let nodes = oldBubbles.data();
+
+      for(let i = 0; i < nodes.length; i++){
+        if(priceData[nodes[i].symbol]){
+          newPrice = priceData[nodes[i].symbol].USD;
+          nodes[i].percent_change_10s = percentChange(nodes[i].price, newPrice);
+          nodes[i].price = newPrice;
+        }
+      }
+      console.log('nodes bubbles data..');
+      oldBubbles.data(nodes, function (d) { return d.id; });
+      console.log(oldBubbles);
+
+    }
+
+
+
     //for updating nodes
     //because of closure this function will have access to all things in this function
     return function(pricePath){
-      console.log("in update...");
-      console.log(pricePath);
       //continously call updates
       (function poll(){
        setTimeout(function(){
-          $.ajax({ url: pricePath, success: function(data){
-            console.log('success!');
-            console.log(data);
+          $.ajax({ url: pricePath, success: function(priceData){
+            updateBubbles(priceData);
             poll();
           }, dataType: "json"});
         }, 3000);
       })();
-
-      // bubbles = svg.selectAll('circle')
-      //           .data()
-      //
-      //
-      // console.log('in update nodes');
-      // bubbles
-      //   .attr('cx', function(d){
-      //     return 200;
-      //   })
-      //   .attr('cx', function(d){
-      //     return 200;
-      //   });
     };
 
   };
@@ -333,17 +342,14 @@ function bubbleChart(){
 var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
-var updateNodes = null;
-
 
 function display(error, data){
   if(error){
     console.log(err);
   }
   pricePath = priceUrlPath(data);
-  updateNodes = myBubbleChart('#chart', data); //display
-  updateNodes(pricePath);
-
+  let updateNodes = myBubbleChart('#chart', data); //display
+  updateNodes(pricePath,data); //update price every 10 seconds
 }
 
 
@@ -355,8 +361,6 @@ function priceUrlPath(rawData){
   //get top 65
   symbols = symbols.slice(0,65).join(",");
   path = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+symbols+'&tsyms=USD';
-  console.log("path is");
-  console.log(path);
   return path;
 }
 
@@ -395,4 +399,25 @@ function setupButtons() {
       // the currently clicked button.
       myBubbleChart.toggleDisplay(buttonId);
     });
+}
+
+/**helper function**/
+function percentChange(originalNum, newNum){
+  if(newNum > originalNum){
+    return percentIncrease(originalNum,newNum);
+  }else if(newNum < originalNum){
+    return percentDecrease(originalNum,newNum);
+  }else{
+    return 0;
+  }
+}
+
+function percentIncrease(originalNum, newNum){
+  let increase = newNum - originalNum;
+  return (increase/originalNum)*100;
+}
+
+function percentDecrease(originalNum, newNum){
+  let decrease = originalNum - newNum;
+  return -1 * ((decrease / originalNum)*100);
 }
