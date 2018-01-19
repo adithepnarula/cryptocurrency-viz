@@ -167,8 +167,7 @@ function bubbleChart(){
   * SET UP
   */
   let width = 900;
-  let height = 900;
-
+  let height = 700;
   // These will be set in "chart" function
   var svg = null;
   var bubbles = null;
@@ -178,15 +177,31 @@ function bubbleChart(){
   var forceStrength = 0.05;
 
   let forceYSplit = d3.forceY(function(d){
-    if(parseInt(d.percent_change_1h) >= 0){
-      return 200;
+    // if(d.symbol === 'BTC'){
+    //   console.log('[force] BTC');
+    //   console.log('[force] d.percent_change_10s: ' + d.percent_change_10s);
+    // }
+    if(d.percent_change_10s > 0){
+      // if(d.symbol === 'BTC'){
+      //   console.log('[force] MORE. ');
+      // }
+      return 150;
+    }else if(d.percent_change_10s < 0){
+      // if(d.symbol === 'BTC'){
+      //   console.log('[force] LESS. ');
+      // }
+      return 550;
     }else{
-      return 700;
+      // if(d.symbol === 'BTC'){
+      //   console.log('[force] EQUAL. ');
+      // }
+      return center.y;
     }
+
   });
 
   //use to set distance between nodes so there won't be collision
-  var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([15,100]); //make square root scale because it is the radius of the circle
+  var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([8,70]); //make square root scale because it is the radius of the circle
 
   let forceXCenter = d3.forceX().strength(forceStrength).x(center.x);
   let forceYCenter = d3.forceY().strength(forceStrength).y(center.y);
@@ -213,6 +228,7 @@ function bubbleChart(){
 
 
   function createNodes(rawData){
+    rawData = rawData.slice(0,numCryptos);
     var myNodes = rawData.map(function (d) {
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
@@ -259,8 +275,8 @@ function bubbleChart(){
     // Fancy transition to make bubbles appear, ending with the
     // correct radius
     bubbles.transition()
-    .duration(2000)
-    .attr('r', function (d) { return d.radius; });
+      .duration(2000)
+      .attr('r', function (d) { return d.radius; });
 
     simulation.nodes(nodes);
 
@@ -274,16 +290,29 @@ function bubbleChart(){
       let nodes = oldBubbles.data();
 
       for(let i = 0; i < nodes.length; i++){
+
         if(priceData[nodes[i].symbol]){
+
           newPrice = priceData[nodes[i].symbol].USD;
           nodes[i].percent_change_10s = percentChange(nodes[i].price, newPrice);
+
+          if(nodes[i].symbol === 'BTC'){
+            console.log('BTC');
+            console.log('old price = ' + nodes[i].price);
+            console.log('new price = ' + newPrice);
+            console.log('percent change = ' + nodes[i].percent_change_10s);
+          }
+
+
           nodes[i].price = newPrice;
+
         }
       }
-      console.log('nodes bubbles data..');
-      oldBubbles.data(nodes, function (d) { return d.id; });
-      console.log(oldBubbles);
 
+      oldBubbles.data(nodes, function (d) { return d.id; });
+
+
+      splitBubbles();
     }
 
 
@@ -298,7 +327,7 @@ function bubbleChart(){
             updateBubbles(priceData);
             poll();
           }, dataType: "json"});
-        }, 3000);
+        }, 15000);
       })();
     };
 
@@ -342,6 +371,7 @@ function bubbleChart(){
 var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
+var numCryptos = 65;
 
 function display(error, data){
   if(error){
@@ -354,12 +384,14 @@ function display(error, data){
 
 
 function priceUrlPath(rawData){
+  rawData = rawData.slice(0,numCryptos);
   var symbols = rawData.map(function (d) {
     return d.symbol;
   });
 
-  //get top 65
-  symbols = symbols.slice(0,65).join(",");
+  //get first 65
+  // symbols = symbols.slice(0,numCryptos).join(",");
+  symbols = symbols.join(",");
   path = "https://min-api.cryptocompare.com/data/pricemulti?fsyms="+symbols+'&tsyms=USD';
   return path;
 }
