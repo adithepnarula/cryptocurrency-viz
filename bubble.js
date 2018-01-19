@@ -5,6 +5,10 @@ function bubbleChart(){
   */
   let width = 900;
   let height = 700;
+
+  //tool tip
+  var tooltip = floatingTooltip('gates_tooltip', 240);
+
   // These will be set in "chart" function
   var svg = null;
   var bubbles = null;
@@ -50,6 +54,11 @@ function bubbleChart(){
   simulation.stop();
 
 
+  var fillColor = d3.scaleOrdinal()
+    .domain(['low', 'medium', 'high'])
+    .range(['#d84b2a', '#beccae', '#7aa25c']);
+
+
   function createNodes(rawData){
     rawData = rawData.slice(0,numCryptos);
     var myNodes = rawData.map(function (d) {
@@ -88,10 +97,14 @@ function bubbleChart(){
     var bubblesE = bubbles.enter().append('circle')
     .classed('bubble', true)
     .attr('r', 0)
+    .attr('fill', function (d) { return fillColor('medium'); })
+    .attr('stroke', function (d) { return d3.rgb(fillColor('high')).darker(); })
     .attr('fill', function (d) { return "lightblue"; })
     .on('click',function(d){
       console.log(d);
-    });
+    })
+    .on('mouseover', showDetail)
+    .on('mouseout', hideDetail);
 
     bubbles = bubbles.merge(bubblesE);
 
@@ -191,6 +204,43 @@ function bubbleChart(){
     simulation.alpha(1).restart();
   }
 
+  /*
+   * Function called on mouseover to display the
+   * details of a bubble in the tooltip.
+   */
+  function showDetail(d) {
+    console.log('in showDetail');
+    console.log(d.price);
+    // change outline to indicate hover state.
+    d3.select(this).attr('stroke', 'black');
+
+    var content = '<span class="name">Title: </span><span class="value">' +
+                  d.id +
+                  '</span><br/>' +
+                  '<span class="name">Amount: </span><span class="value">$' +
+                  addCommas(d.price) +
+                  '</span><br/>' +
+                  '<span class="name">Year: </span><span class="value">' +
+                  d.price +
+                  '</span>';
+    console.log("content is = ");
+    console.log(content);
+    tooltip.showTooltip(content, d3.event);
+  }
+
+  /*
+   * Hides tooltip
+   */
+  function hideDetail(d) {
+    // reset outline
+    d3.select(this)
+      .attr('stroke', d3.rgb(fillColor('low')).darker());
+    console.log('in hide detail');
+    tooltip.hideTooltip();
+  }
+
+
+
   return chart;
 }
 
@@ -280,4 +330,22 @@ function percentIncrease(originalNum, newNum){
 function percentDecrease(originalNum, newNum){
   let decrease = originalNum - newNum;
   return -1 * ((decrease / originalNum)*100);
+}
+
+
+/*
+ * Helper function to convert a number into a string
+ * and add commas to it to improve presentation.
+ */
+function addCommas(nStr) {
+  nStr += '';
+  var x = nStr.split('.');
+  var x1 = x[0];
+  var x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+
+  return x1 + x2;
 }
