@@ -15,13 +15,18 @@ function bubbleChart(){
   var nodes = [];
 
   var center = { x: width / 2, y: height / 2 };
+  var top = { y: height / 5 };
+  var bottom = { y: height / 1.3 };
+
   var forceStrength = 0.05;
 
   let forceYSplit = d3.forceY(function(d){
     if(d.percent_change_10s > 0){
-      return 150;
+      // return 150;
+      return top.y;
     }else if(d.percent_change_10s < 0){
-      return 550;
+      // return 550;
+      return bottom.y;
     }else{
       return center.y;
     }
@@ -44,23 +49,6 @@ function bubbleChart(){
     res = (temp * 100) + 150;
     return res;
   };
-
-  // let forceXSort = d3.forceX(function(d){
-  //   let rank = d.rank - 1;
-  //   temp = Math.floor(rank / 10);
-  //   res = (temp * 100) + 20;
-  //   console.log(d.name + " || x = " + res);
-  //   return res;
-  //
-  // });
-  //
-  // let forceYSort = d3.forceX(function(d){
-  //   let rank = d.rank - 1;
-  //   temp = (rank % 10);
-  //   res = (temp * 100) + 20;
-  //   console.log(d.name + " || y = " + res);
-  //   return res;
-  // });
 
   //use to set distance between nodes so there won't be collision
   var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([8,70]); //make square root scale because it is the radius of the circle
@@ -274,6 +262,8 @@ function bubbleChart(){
     simulation.force("x", d3.forceX().strength(forceStrength*2).x(forceXSort));
     simulation.force("y", d3.forceY().strength(forceStrength*2).y(forceYSort));
     simulation.alpha(2).restart();
+    var bubblesE = svg.selectAll('circle')
+      .attr('stroke', d3.rgb(fillColor('blue')).darker());
   }
 
 
@@ -298,15 +288,8 @@ function bubbleChart(){
       d3.select(this)
         .attr('fill', d3.rgb(fillColor('blue')).darker());
     }
-    var content = '<span class="name">Title: </span><span class="value">' +
-                  d.id +
-                  '</span><br/>' +
-                  '<span class="name">Amount: </span><span class="value">$' +
-                  addCommas(d.price) +
-                  '</span><br/>' +
-                  '<span class="name">Year: </span><span class="value">' +
-                  d.price +
-                  '</span>';
+    var content = '<span class="name">' + d.name +'</span><br/>' +
+                  '<span class="value">$' + addCommas(d.price) +'</span><br/>';
     tooltip.showTooltip(content, d3.event);
   }
 
