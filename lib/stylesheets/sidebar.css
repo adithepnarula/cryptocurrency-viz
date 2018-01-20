@@ -1,0 +1,70 @@
+.sidebar-container{
+  width: 100%;
+  height: 100%;
+  grid-column-start: 2;
+  background-color: #3B4048;
+  color:white;
+  display: grid;
+  grid-template-rows: 50px 350px auto;
+
+}
+
+.sidebar-container > .sidebar-header {
+  font-size: 30px;
+  padding: 20px;
+  text-align: center;
+
+}
+
+.sidebar-container > .sidebar-intro {
+  padding: 20px;
+  color: #ABB2BF;
+}
+
+.sidebar-container > .sidebar-intro > p{
+  margin-bottom: 10px;
+  font-size: 16px;
+  /* line-height: 18px; */
+}
+
+.sidebar-container > .sidebar-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crypto-name {
+  font-size: 30px;
+  margin-bottom: 30px;
+}
+
+
+.percent-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.percent-container > .percent_number_container {
+  display: flex;
+  flex-direction: row;
+  font-size: 54px;
+  font-family: "Avenir Next";
+  color: #ABB2BF;
+  justify-content: center;
+}
+
+.time-text {
+  opacity: 0.3;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.plus{
+  color: #61CA00;
+}
+
+.minus{
+  color: red;
+}

@@ -3,7 +3,7 @@ function bubbleChart(){
   /**
   * SET UP
   */
-  let width = 900;
+  let width = 700;
   let height = 700;
 
   //tool tip
@@ -64,6 +64,7 @@ function bubbleChart(){
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
         id: d.id,
+        name: d.name,
         symbol: d.symbol,
         market_cap_rounded: market_cap_rounded,
         radius: radiusScale(market_cap_rounded),
@@ -103,7 +104,7 @@ function bubbleChart(){
     .attr('stroke', function (d) { return d3.rgb(fillColor('high')).darker(); })
     .attr('fill', function (d) { return "lightblue"; })
     .on('click',function(d){
-      console.log(d);
+      showSidebarDetail(d, state);
     })
     .on('mouseover', showDetail)
     .on('mouseout', hideDetail);
@@ -135,17 +136,8 @@ function bubbleChart(){
         }
 
         if(priceData[symbol]){
-
           newPrice = priceData[symbol].USD;
           nodes[i].percent_change_10s = percentChange(nodes[i].price, newPrice);
-
-          // if(symbol === 'IOTA'){
-          //   console.log('IOTA');
-          //   console.log('old price = ' + nodes[i].price);
-          //   console.log('new price = ' + newPrice);
-          //   console.log('percent change = ' + nodes[i].percent_change_10s);
-          // }
-
           nodes[i].price = newPrice;
 
         }else{
@@ -193,9 +185,11 @@ function bubbleChart(){
     if (displayName === 'percent') {
       state = 'percent';
       percentBubbles();
+      showPercentSidebar();
     } else {
       state = 'marketCap';
       groupBubbles();
+      showMarketSidebar();
     }
   };
 
@@ -209,7 +203,6 @@ function bubbleChart(){
 
   function percentBubbles() {
     // showPriceChangeTitles();
-    updateSideBar('percent');
     simulation.force("y", forceYSplit);
     simulation.alpha(1).restart();
   }
@@ -219,7 +212,6 @@ function bubbleChart(){
    * details of a bubble in the tooltip.
    */
   function showDetail(d) {
-    console.log(d.price);
     // change outline to indicate hover state.
     d3.select(this).attr('stroke', 'black');
 
