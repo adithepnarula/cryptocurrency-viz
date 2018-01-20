@@ -3,8 +3,8 @@ function bubbleChart(){
   /**
   * SET UP
   */
-  let width = 700;
-  let height = 700;
+  let width = 800;
+  let height = 800;
 
   //tool tip
   var tooltip = floatingTooltip('gates_tooltip', 240);
@@ -27,6 +27,41 @@ function bubbleChart(){
     }
   });
 
+  let forceXSort = function(d){
+    let num_rows = 6;
+    let space_between = 50;
+    let left_margin = 150;
+    let rank = d.rank - 1;
+
+    temp = Math.floor(rank / num_rows);
+    res = (temp * space_between) + left_margin;
+    return res;
+  };
+
+  let forceYSort = function(d){
+    let rank = d.rank - 1;
+    temp = (rank % 6);
+    res = (temp * 100) + 150;
+    return res;
+  };
+
+  // let forceXSort = d3.forceX(function(d){
+  //   let rank = d.rank - 1;
+  //   temp = Math.floor(rank / 10);
+  //   res = (temp * 100) + 20;
+  //   console.log(d.name + " || x = " + res);
+  //   return res;
+  //
+  // });
+  //
+  // let forceYSort = d3.forceX(function(d){
+  //   let rank = d.rank - 1;
+  //   temp = (rank % 10);
+  //   res = (temp * 100) + 20;
+  //   console.log(d.name + " || y = " + res);
+  //   return res;
+  // });
+
   //use to set distance between nodes so there won't be collision
   var radiusScale = d3.scaleSqrt().domain([1, 2000]).range([8,70]); //make square root scale because it is the radius of the circle
 
@@ -40,7 +75,6 @@ function bubbleChart(){
   function charge(d) {
     return -Math.pow(d.radius, 2.0) * forceStrength;
   }
-
 
 
   var simulation = d3.forceSimulation()
@@ -65,6 +99,7 @@ function bubbleChart(){
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
         id: d.id,
+        rank: d.rank,
         name: d.name,
         symbol: d.symbol,
         market_cap_rounded: market_cap_rounded,
@@ -125,7 +160,8 @@ function bubbleChart(){
     simulation.nodes(nodes);
 
     // Set initial layout to single group.
-    groupBubbles();
+    // groupBubbles();
+    marketBubbles();
 
 
     //ajax call will update bubbles everything regardless
@@ -176,7 +212,8 @@ function bubbleChart(){
 
   };
 
-  function ticked() {
+  function ticked(e) {
+    // console.log('ticked is called');
     bubbles
       .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; });
@@ -192,12 +229,17 @@ function bubbleChart(){
       percentBubbles();
       showPercentSidebar();
     } else {
-      state = 'marketCap';
-      groupBubbles();
+      state = 'market';
+      // groupBubbles();
+      marketBubbles();
       showMarketSidebar();
     }
   };
 
+  /*
+  * Each method applies different force to the bubbles
+  *
+  */
   function groupBubbles(){
     simulation
       .force("x", forceXCenter)
@@ -211,6 +253,7 @@ function bubbleChart(){
 
   function percentBubbles() {
     // showPriceChangeTitles();
+    simulation.force("x", forceXCenter);
     simulation.force("y", forceYSplit);
     simulation.alpha(1).restart();
 
@@ -225,8 +268,15 @@ function bubbleChart(){
         }
       });
 
-
   }
+
+  function marketBubbles(){
+    simulation.force("x", d3.forceX().strength(forceStrength*2).x(forceXSort));
+    simulation.force("y", d3.forceY().strength(forceStrength*2).y(forceYSort));
+    simulation.alpha(2).restart();
+  }
+
+
 
   /*
    * Function called on mouseover to display the
@@ -295,7 +345,7 @@ var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
 var numCryptos = 65;
-var state = 'marketCap'; //set state on what to show
+var state = 'market'; //set state on what to show
 
 function display(error, data){
   if(error){
