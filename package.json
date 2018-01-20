@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/adithepnarula/cryptocurrency-viz/issues"
   },
-  "homepage": "https://github.com/adithepnarula/cryptocurrency-viz#readme"
+  "homepage": "https://github.com/adithepnarula/cryptocurrency-viz#readme",
+  "dependencies": {
+    "animate.css": "^3.5.2"
+  }
 }

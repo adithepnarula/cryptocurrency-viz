@@ -55,8 +55,9 @@ function bubbleChart(){
 
 
   var fillColor = d3.scaleOrdinal()
-    .domain(['low', 'medium', 'high', 'circle'])
-    .range(['#d84b2a', '#beccae', '#7aa25c','white']);
+    .domain(['low', 'medium', 'high', 'circle',
+  'blue'])
+    .range(['#d84b2a', '#beccae', '#7aa25c','#000000','#61AFEF']);
 
 
   function createNodes(rawData){
@@ -203,6 +204,9 @@ function bubbleChart(){
       .force("y", forceYCenter);
 
     simulation.alpha(1).restart(); //reset alpha to restart simulation
+
+    var bubblesE = svg.selectAll('circle')
+      .attr('stroke', d3.rgb(fillColor('blue')).darker());
   }
 
   function percentBubbles() {
@@ -230,15 +234,20 @@ function bubbleChart(){
    */
   function showDetail(d) {
     // change outline to indicate hover state.
-    d3.select(this).attr('fill', function(d){
-      if(d.percent_change_10s > 0){
-        return d3.rgb(fillColor('high')).darker();
-      }else if(d.percent_change_10s === 0){
-        return d3.rgb(fillColor('medium')).darker();
-      }else{
-        return d3.rgb(fillColor('low')).darker();
-      }
-    });
+    if(state === 'percent'){
+      d3.select(this).attr('fill', function(d){
+        if(d.percent_change_10s > 0){
+          return d3.rgb(fillColor('high')).darker();
+        }else if(d.percent_change_10s === 0){
+          return d3.rgb(fillColor('medium')).darker();
+        }else{
+          return d3.rgb(fillColor('low')).darker();
+        }
+      });
+    }else{
+      d3.select(this)
+        .attr('fill', d3.rgb(fillColor('blue')).darker());
+    }
     var content = '<span class="name">Title: </span><span class="value">' +
                   d.id +
                   '</span><br/>' +
