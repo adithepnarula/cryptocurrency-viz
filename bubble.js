@@ -55,8 +55,8 @@ function bubbleChart(){
 
 
   var fillColor = d3.scaleOrdinal()
-    .domain(['low', 'medium', 'high'])
-    .range(['#d84b2a', '#beccae', '#7aa25c']);
+    .domain(['low', 'medium', 'high', 'circle'])
+    .range(['#d84b2a', '#beccae', '#7aa25c','white']);
 
 
   function createNodes(rawData){
@@ -100,9 +100,13 @@ function bubbleChart(){
     var bubblesE = bubbles.enter().append('circle')
     .classed('bubble', true)
     .attr('r', 0)
-    .attr('fill', function (d) { return fillColor('medium'); })
-    .attr('stroke', function (d) { return d3.rgb(fillColor('high')).darker(); })
-    .attr('fill', function (d) { return "lightblue"; })
+    .attr('fill', d3.rgb(fillColor('circle')).darker())
+    .attr('fill-opacity', 0.5)
+    .attr('stroke', function (d) {
+      return d3.rgb(fillColor('high')).darker();
+    })
+    .attr('class', 'force-bubble')
+    .attr("stroke-width", 3)
     .on('click',function(d){
       showSidebarDetail(d, state);
     })
@@ -205,6 +209,19 @@ function bubbleChart(){
     // showPriceChangeTitles();
     simulation.force("y", forceYSplit);
     simulation.alpha(1).restart();
+
+    var bubblesE = svg.selectAll('circle')
+      .attr('stroke', function (d) {
+        if(d.percent_change_10s > 0){
+          return d3.rgb(fillColor('high')).darker();
+        }else if(d.percent_change_10s === 0){
+          return d3.rgb(fillColor('medium')).darker();
+        }else{
+          return d3.rgb(fillColor('low')).darker();
+        }
+      });
+
+
   }
 
   /*
@@ -213,8 +230,15 @@ function bubbleChart(){
    */
   function showDetail(d) {
     // change outline to indicate hover state.
-    d3.select(this).attr('stroke', 'black');
-
+    d3.select(this).attr('fill', function(d){
+      if(d.percent_change_10s > 0){
+        return d3.rgb(fillColor('high')).darker();
+      }else if(d.percent_change_10s === 0){
+        return d3.rgb(fillColor('medium')).darker();
+      }else{
+        return d3.rgb(fillColor('low')).darker();
+      }
+    });
     var content = '<span class="name">Title: </span><span class="value">' +
                   d.id +
                   '</span><br/>' +
@@ -233,7 +257,7 @@ function bubbleChart(){
   function hideDetail(d) {
     // reset outline
     d3.select(this)
-      .attr('stroke', d3.rgb(fillColor('low')).darker());
+      .attr('fill', d3.rgb(fillColor('circle')).darker());
     tooltip.hideTooltip();
   }
 

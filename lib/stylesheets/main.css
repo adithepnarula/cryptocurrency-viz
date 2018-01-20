@@ -33,8 +33,6 @@ button{
 
 }
 
-
-
 .chart-container {
   background-color: #282C34;
   width: 100%;
@@ -45,4 +43,8 @@ button{
   align-items: center;
   justify-content: center;
   /* border-left: 2px solid #E8E8E8; */
+}
+
+.force-bubble{
+  /* opacity: 0.2; */
 }
