@@ -434,3 +434,19 @@ function addCommas(nStr) {
 
   return x1 + x2;
 }
+
+function searchNode() {
+    var svg = $('svg');
+    var selectedVal = $('#search').val();
+    console.log("selected value");
+    console.log(selectedVal);
+    var bubbles = d3.selectAll(".force-bubble");
+    var selected = bubbles.filter(function(d, i){
+      return d.id != selectedVal;
+    });
+    selected.style("opacity", "0");
+    d3.selectAll(".force-bubble").transition()
+        .duration(5000)
+        .style("opacity", 1);
+
+}
