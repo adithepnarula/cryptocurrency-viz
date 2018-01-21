@@ -91,6 +91,7 @@ function bubbleChart(){
         name: d.name,
         symbol: d.symbol,
         market_cap_rounded: market_cap_rounded,
+        market_cap: d.market_cap_usd,
         radius: radiusScale(market_cap_rounded),
         price: d.price_usd,
         percent_change_10s: d.percent_change_1h,
@@ -216,11 +217,13 @@ function bubbleChart(){
       state = 'percent';
       percentBubbles();
       showPercentSidebar();
+      clearDetailbar();
     } else {
       state = 'market';
       // groupBubbles();
       marketBubbles();
       showMarketSidebar();
+      clearDetailbar();
     }
   };
 
@@ -275,7 +278,8 @@ function bubbleChart(){
   function showDetail(d) {
     // change outline to indicate hover state.
     if(state === 'percent'){
-      d3.select(this).attr('fill', function(d){
+      d3.select(this)
+      .attr('fill', function(d){
         if(d.percent_change_10s > 0){
           return d3.rgb(fillColor('high')).darker();
         }else if(d.percent_change_10s === 0){

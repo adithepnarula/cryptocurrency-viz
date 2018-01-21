@@ -1,5 +1,5 @@
 function updateSideBar(state){
-  if(state === 'marketCap'){
+  if(state === 'market'){
     showMarketSidebar();
   }else if(state === 'percent'){
     showPercentSidebar();
@@ -26,19 +26,26 @@ function showPercentSidebar(){
 }
 
 function showSidebarDetail(data, state){
-  if(state === 'marketCat'){
+  if(state === 'market'){
     showMarketSidebarDetail(data);
   }else if(state === 'percent'){
     showPercentSidebarDetail(data);
   }
 }
 
-function showPercentSidebarDetail(data){
+function clearDetailbar(){
   let $sidebarData = $('.sidebar-data');
   $sidebarData.empty();
-  $title = $(`<h1 class="crypto-name"> ${data.name} </h1>`);
+}
 
+function showPercentSidebarDetail(data){
+  clearDetailbar();
+  let $sidebarData = $('.sidebar-data');
+  $title = $(`<h1 class="crypto-name"> ${data.name} </h1>`);
   data.percent_change_10s = Math.round(data.percent_change_10s*100) / 100;
+  data.percent_change_1h = Math.round(data.percent_change_1h*100) / 100;
+  data.percent_change_24h = Math.round(data.percent_change_24h*100) / 100;
+  data.percent_change_7d = Math.round(data.percent_change_7d*100) / 100;
 
   $10s_container = $('<div class="percent-container"></div>');
   $10s_number_container = $('<div class="percent_number_container"></div>');
@@ -87,6 +94,7 @@ function showPercentSidebarDetail(data){
 }
 
 
+
 //market sidebar
 function showMarketSidebar(){
   //set up header
@@ -98,6 +106,31 @@ function showMarketSidebar(){
   //set up intro info
   let $sidebarIntro = $('.sidebar-intro');
   $sidebarIntro.empty();
-  $info = $("<p> lorem ipsum.. to remove market </p>");
-  $sidebarIntro.append($info);
+  $info1 = $("<p> Originally known for their reputation as havens for criminals and money launderers, cryptocurrencies have come a long way—with regards to both technological advancement and popularity. As of January 2018, the market cap of $200 billion, with peak trading volumes around $11 billion per day. The technology underlying cryptocurrencies has been said to have powerful applications in various sectors ranging from healthcare to media.</p>");
+  $info2 = $("<p> Each force bubble on the right represents a cryptocurrency. The size of the diameter corresponds to the size of the market relative to other cryptocurrencies. Hover on the force bubble and press on them to find out more details!</p>");
+
+  $sidebarIntro.append($info1);
+  $sidebarIntro.append($info2);
+}
+
+function showMarketSidebarDetail(data){
+  clearDetailbar();
+  let $sidebarData = $('.sidebar-data');
+  $title = $(`<h1 class="crypto-name"> ${data.name} </h1>`);
+
+  $market_container = $('<div class="percent-container"></div>');
+  $market_number_container = $('<div class="percent_number_container"></div>');
+  $market_number = $(`<div class="change">$${(data.market_cap_rounded/10) } bn</div>`);
+  $market_text = $(`<div class="time-text"> MARKET CAP </div>`);
+
+
+  $sidebarData.append($title);
+
+  $market_number_container.append($market_number);
+  $market_container.append($market_number_container, $market_text);
+  $sidebarData.append($market_container);
+
+  // $24h_number_container.append($24h_sign, $24h_gain);
+  // $24h_container.append($24h_number_container, $24h_gain_text);
+  // $sidebarData.append($24h_container);
 }
