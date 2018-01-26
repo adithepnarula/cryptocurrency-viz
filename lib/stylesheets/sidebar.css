@@ -5,7 +5,8 @@
   background-color: #3B4048;
   color:white;
   display: grid;
-  grid-template-rows: 50px 350px auto;
+  grid-template-rows: 80px 220px 420px auto;
+  align-items: center;
 
 }
 
@@ -13,7 +14,6 @@
   font-size: 30px;
   padding: 20px;
   text-align: center;
-
 }
 
 .sidebar-container > .sidebar-intro {
@@ -67,4 +67,55 @@
 
 .minus{
   color: red;
+}
+
+.ui-widget{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#search{
+  background-color:
+  background-image:url("search-icon-white.svg");
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-position: 2% center;
+  background-color: rgba(255,255,255,0.2);
+  padding-left: 46px;
+  padding-right: 24px;
+  vertical-align: top;
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  height: 40px;
+  transition: background-color .2s ease-in-out;
+}
+
+#search:hover{
+  color: #fff;
+  background-color: rgba(255,255,255,0.15);
+  transition: background-color .2s ease-in-out;
+}
+
+#search {
+  height: 30px;
+}
+
+
+#search:focus:hover{
+  background-color: white;
+  color: #000;
+  transition: background-color .2s ease-in-out;
+
+}
+
+#search:active{
+  transition: background-color .2s ease-in-out;
+  color: #fff;
+  background-color: rgba(255,255,255,0.2);
+}
+
+#search-button{
+
 }

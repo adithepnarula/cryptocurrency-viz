@@ -17,10 +17,10 @@ function showPercentSidebar(){
   let $sidebarIntro = $('.sidebar-intro');
   $sidebarIntro.empty();
 
-  $info1 = $("<p> cryptocurrency price fluctuations are driven by many factors, such as ensuing news about losses, varying perceptions of the intrinsic value, and announcements of different tax treaments. Volatility in cryptocurrencies are capable in the form of 10x changes in price versus the U.S. dollar, in a relatively short period of time. </p>");
+  // $info1 = $("<p> cryptocurrency price fluctuations are driven by many factors, such as ensuing news about losses, varying perceptions of the intrinsic value, and announcements of different tax treaments. Volatility in cryptocurrencies are capable in the form of 10x changes in price versus the U.S. dollar, in a relatively short period of time. </p>");
   $info2 = $("<p> The force bubbles on the right illustrates the fluctuative nature of cryptocurrency prices by polling for prices every 30 seconds. A force bubble charges to the top it shows a net gain, remains in the center if the price is the same, and shoots to the bottom if it shows a net loss over the last 30 seconds. Hover on the force bubble and press on them to find out more details!</p>");
 
-  $sidebarIntro.append($info1);
+  // $sidebarIntro.append($info1);
   $sidebarIntro.append($info2);
 
 }
@@ -106,10 +106,10 @@ function showMarketSidebar(){
   //set up intro info
   let $sidebarIntro = $('.sidebar-intro');
   $sidebarIntro.empty();
-  $info1 = $("<p> Originally known for their reputation as havens for criminals and money launderers, cryptocurrencies have come a long way—with regards to both technological advancement and popularity. As of January 2018, the market cap of $200 billion, with peak trading volumes around $11 billion per day. The technology underlying cryptocurrencies has been said to have powerful applications in various sectors ranging from healthcare to media.</p>");
+  // $info1 = $("<p> Originally known for their reputation as havens for criminals and money launderers, cryptocurrencies have come a long way—with regards to both technological advancement and popularity. As of January 2018, the market cap of $200 billion, with peak trading volumes around $11 billion per day. The technology underlying cryptocurrencies has been said to have powerful applications in various sectors ranging from healthcare to media.</p>");
   $info2 = $("<p> Each force bubble on the right represents a cryptocurrency. The size of the diameter corresponds to the size of the market relative to other cryptocurrencies. Hover on the force bubble and press on them to find out more details!</p>");
 
-  $sidebarIntro.append($info1);
+  // $sidebarIntro.append($info1);
   $sidebarIntro.append($info2);
 }
 
