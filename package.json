@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/adithepnarula/cryptocurrency-viz#readme",
   "dependencies": {
-    "animate.css": "^3.5.2"
+    "animate.css": "^3.5.2",
+    "webpack": "^3.10.0"
   }
 }
