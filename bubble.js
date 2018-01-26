@@ -83,6 +83,7 @@ function bubbleChart(){
 
 
   function createNodes(rawData){
+
     var myNodes = rawData.map(function (d) {
       let market_cap_rounded = Math.floor(parseInt(d.market_cap_usd)/100000000);
       return {
@@ -333,6 +334,10 @@ var myBubbleChart = bubbleChart(); //chart gets returned
 
 var numCryptos = 65;
 var state = 'market'; //set state on what to show
+
+//keep track of the higest gain and highest loss every 30 seconds 
+var highestPercentGain = null;
+var highestPercentLoss = null;
 
 function display(error, data){
   if(error){
