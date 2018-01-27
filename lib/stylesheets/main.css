@@ -34,6 +34,14 @@ body {
   color: #ABB2BF;
   border-color: transparent;
   margin: 20px 0;
+  cursor:pointer;
+}
+
+.active{
+  color: #61AFEF;
+}
+.button:hover{
+  color: #61AFEF;
 }
 
 #github-button{
