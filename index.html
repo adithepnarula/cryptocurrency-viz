@@ -6,6 +6,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
       <link rel="stylesheet" href="lib/stylesheets/reset.css">
       <link rel="stylesheet" href="lib/stylesheets/main.css">
+
       <link rel="stylesheet" href="lib/stylesheets/tooltip.css">
       <link rel="stylesheet" href="lib/stylesheets/sidebar.css">
       <link rel="stylesheet"
@@ -19,19 +20,30 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <div class="grid-container">
 
       <div class="buttonsbar">
+
         <button class="button" id="combine"> <i class="fa fa-btc fa-3x" aria-hidden="true"></i></button>
         <button class="button" id="percent"> <i class="fa fa-percent fa-2x" aria-hidden="true"></i></button>
+
+        <div class='container' tabindex='1'>
+          <div class='search-container' tabindex='1'>
+            <input class="search-input" placeholder='Search a cryptocurrency' type='text'>
+            <a class='button-search'>
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
       </div>
 
       <div class="sidebar-container">
         <div class="sidebar-header"></div>
         <div class="sidebar-intro"></div>
         <div class="sidebar-data"></div>
-        <div class="ui-widget">
+        <!-- <div class="ui-widget">
           <input id="search">
           <div id="search-button" type="button" onclick="searchNode()"> <span> Search </span>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="chart-container">

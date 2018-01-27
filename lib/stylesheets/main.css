@@ -21,7 +21,7 @@ body {
   justify-content: center;
 }
 
-button{
+.button{
   width: 60px;
   height: 60px;
   padding: 10px;
@@ -30,7 +30,6 @@ button{
   color: #ABB2BF;
   border-color: transparent;
   margin: 20px 0;
-
 }
 
 .chart-container {
