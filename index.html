@@ -39,11 +39,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
         <div class="sidebar-header"></div>
         <div class="sidebar-intro"></div>
         <div class="sidebar-data"></div>
-        <!-- <div class="ui-widget">
-          <input id="search">
-          <div id="search-button" type="button" onclick="searchNode()"> <span> Search </span>
-          </div>
-        </div> -->
       </div>
 
       <div class="chart-container">
@@ -55,6 +50,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <script src="tooltip.js"></script>
     <script src="sidebar.js"></script>
     <script src="bubble.js"></script>
+
+    <!-- binding keypress event to search -->
+    <script type="text/javascript">
+      $('.search-input').keypress(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+          searchNode();
+        }
+        event.stopPropagation();
+      });
+    </script>
 
 
   </body>

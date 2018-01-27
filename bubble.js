@@ -335,7 +335,7 @@ var myBubbleChart = bubbleChart(); //chart gets returned
 var numCryptos = 65;
 var state = 'market'; //set state on what to show
 
-//keep track of the higest gain and highest loss every 30 seconds 
+//keep track of the higest gain and highest loss every 30 seconds
 var highestPercentGain = null;
 var highestPercentLoss = null;
 
@@ -442,7 +442,7 @@ function addCommas(nStr) {
 
 function searchNode() {
     var svg = $('svg');
-    var selectedVal = $('#search').val();
+    var selectedVal = $('.search-input').val();
     console.log("selected value");
     console.log(selectedVal);
     var bubbles = d3.selectAll(".force-bubble");
