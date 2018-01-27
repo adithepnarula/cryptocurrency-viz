@@ -332,6 +332,7 @@ function bubbleChart(){
 var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
+
 var numCryptos = 65;
 var state = 'market'; //set state on what to show
 
@@ -443,6 +444,7 @@ function addCommas(nStr) {
 function searchNode() {
     var svg = $('svg');
     var selectedVal = $('.search-input').val();
+    selectedVal = $.trim(selectedVal.toLowerCase());
     console.log("selected value");
     console.log(selectedVal);
     var bubbles = d3.selectAll(".force-bubble");

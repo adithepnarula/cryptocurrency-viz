@@ -76,59 +76,6 @@
   justify-content: center;
 }
 
-#search{
-  background-color: rgba(255,255,255,0.2);
-  padding-left: 20px;
-  padding-right: 24px;
-  border-radius: 3px;
-  border: none;
-  outline: none;
-  height: 30px;
-  transition: background-color .2s ease-in-out;
-}
-
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: #ABB2BF;
-}
-::-moz-placeholder { /* Firefox 19+ */
-  color: #ABB2BF;
-}
-:-ms-input-placeholder { /* IE 10+ */
-  color: #ABB2BF;
-}
-:-moz-placeholder { /* Firefox 18- */
-  color: #ABB2BF;
-}
-
-#search:hover{
-  color: #fff;
-  background-color: rgba(255,255,255,0.15);
-  transition: background-color .2s ease-in-out;
-}
-
-#search:focus:hover{
-  background-color: white;
-  color: #000;
-  transition: background-color .2s ease-in-out;
-
-}
-
-#search:active{
-  transition: background-color .2s ease-in-out;
-  color: #fff;
-  background-color: rgba(255,255,255,0.2);
-}
-
-#search-button{
-  background-color: #42454B;
-  color: #ABB2BF;
-  padding: 8px;
-}
-
-#search-button:hover{
-  cursor: pointer;
-}
-
 
 /* search */
 

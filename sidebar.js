@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', function(){
+  updateSideBar('market');
+});
+
 function updateSideBar(state){
   if(state === 'market'){
     showMarketSidebar();
@@ -47,28 +51,46 @@ function showPercentSidebarDetail(data){
   data.percent_change_24h = Math.round(data.percent_change_24h*100) / 100;
   data.percent_change_7d = Math.round(data.percent_change_7d*100) / 100;
 
+
+
   $10s_container = $('<div class="percent-container"></div>');
   $10s_number_container = $('<div class="percent_number_container"></div>');
-  $10s_sign = $(`<div class="${data.percent_change_10s >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_10s >= 0 ? '+' : '-'} </span>`);
+  if(data.percent_change_10s != 0){
+    $10s_sign = $(`<div class="${data.percent_change_10s >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_10s >= 0 ? '+' : '-'} </div>`);
+  }else{
+    $10s_sign = $(`<span></span>`);
+  }
   $10s_gain = $(`<div class="change"> ${(data.percent_change_10s < 0 ? (-1*data.percent_change_10s) : data.percent_change_10s)}%</div>`);
   $10s_gain_text = $(`<div class="time-text"> PAST 30 SECONDS (%)</div>`);
 
 
   $1h_container = $('<div class="percent-container"></div>');
   $1h_number_container = $('<div class="percent_number_container"></div>');
-  $1h_sign = $(`<div class="${data.percent_change_1h >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_1h >= 0 ? '+' : '-'} </span>`);
+  if(data.percent_change_1h != 0){
+    $1h_sign = $(`<div class="${data.percent_change_1h >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_1h >= 0 ? '+' : '-'} </div>`);
+  }else{
+    $1h_sign = $(`<span></span>`);
+  }
   $1h_gain = $(`<div class="change"> ${(data.percent_change_1h < 0 ? (-1*data.percent_change_1h) : data.percent_change_1h)}%</div>`);
   $1h_gain_text = $(`<div class="time-text"> PAST HOUR (%)</div>`);
 
   $24h_container = $('<div class="percent-container"></div>');
   $24h_number_container = $('<div class="percent_number_container"></div>');
-  $24h_sign = $(`<div class="${data.percent_change_24h >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_24h >= 0 ? '+' : '-'} </span>`);
+  if(data.percent_change_24h != 0){
+    $24h_sign = $(`<div class="${data.percent_change_24h >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_24h >= 0 ? '+' : '-'} </div>`);
+  }else{
+    $24h_sign = $1h_sign = $(`<span></span>`);
+  }
   $24h_gain = $(`<div class="change"> ${(data.percent_change_24h < 0 ? (-1*data.percent_change_24h) : data.percent_change_24h)}%</div>`);
   $24h_gain_text = $(`<div class="time-text"> SINCE YESTERDAY (%)</div>`);
 
   $7d_container = $('<div class="percent-container"></div>');
   $7d_number_container = $('<div class="percent_number_container"></div>');
-  $7d_sign = $(`<div class="${data.percent_change_7d >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_7d >= 0 ? '+' : '-'} </span>`);
+  if(data.percent_change_7d != 0){
+    $7d_sign = $(`<div class="${data.percent_change_7d >= 0 ? 'plus' : 'minus'}" > ${data.percent_change_7d >= 0 ? '+' : '-'} </div>`);
+  }else{
+    $7d_sign = $(`<span></span>`);
+  }
   $7d_gain = $(`<div class="change"> ${(data.percent_change_7d < 0 ? (-1*data.percent_change_7d) : data.percent_change_7d)}%</div>`);
   $7d_gain_text = $(`<div class="time-text"> SINCE LAST WEEK (%)</div>`);
 

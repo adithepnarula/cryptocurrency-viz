@@ -12,7 +12,10 @@ body {
   grid-template-columns: 100px 350px auto; /*The word auto, when used as a value in grid-template-columns or grid-template-rows, will make the column or row as large as its content.*/
 }
 
+
 .buttonsbar{
+  width: 100%;
+  height: 100%;
   background-color: #292C33;
   grid-column-start: 1;
   display: flex;
@@ -20,6 +23,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 
 .button{
   width: 64px;
@@ -30,6 +34,10 @@ body {
   color: #ABB2BF;
   border-color: transparent;
   margin: 20px 0;
+}
+
+#github-button{
+  margin-top: 100px;
 }
 
 .chart-container {
