@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function(){
-  updateSideBar('market');
+  updateSideBar('home');
 });
 
 function updateSideBar(state){
@@ -7,6 +7,8 @@ function updateSideBar(state){
     showMarketSidebar();
   }else if(state === 'percent'){
     showPercentSidebar();
+  }else if(state === 'home'){
+    showHomeSidebar();
   }
 }
 
@@ -14,17 +16,20 @@ function showPercentSidebar(){
   //set up header
   let $sidebarHeader = $('.sidebar-header');
   $sidebarHeader.empty();
-  $title = $("<h1> Percentage Change </h1>");
+  $title = $("<h1> Price Volatility </h1>");
   $sidebarHeader.append($title);
 
   //set up intro info
   let $sidebarIntro = $('.sidebar-intro');
   $sidebarIntro.empty();
 
-  // $info1 = $("<p> cryptocurrency price fluctuations are driven by many factors, such as ensuing news about losses, varying perceptions of the intrinsic value, and announcements of different tax treaments. Volatility in cryptocurrencies are capable in the form of 10x changes in price versus the U.S. dollar, in a relatively short period of time. </p>");
+
+  $info1 = $("<p> cryptocurrency price fluctuations are driven by many factors, such as ensuing news about losses, varying perceptions of the intrinsic value, and announcements of different tax treaments. Volatility in cryptocurrencies are capable in the form of 10x changes in price versus the U.S. dollar, in a relatively short period of time. </p>");
   $info2 = $("<p> The force bubbles on the right illustrates the fluctuative nature of cryptocurrency prices by polling for prices every 30 seconds. A force bubble charges to the top it shows a net gain, remains in the center if the price is the same, and shoots to the bottom if it shows a net loss over the last 30 seconds. Hover on the force bubble and press on them to find out more details!</p>");
 
-  // $sidebarIntro.append($info1);
+
+
+  $sidebarIntro.append($info1);
   $sidebarIntro.append($info2);
 
 }
@@ -50,7 +55,6 @@ function showPercentSidebarDetail(data){
   data.percent_change_1h = Math.round(data.percent_change_1h*100) / 100;
   data.percent_change_24h = Math.round(data.percent_change_24h*100) / 100;
   data.percent_change_7d = Math.round(data.percent_change_7d*100) / 100;
-
 
 
   $10s_container = $('<div class="percent-container"></div>');
@@ -155,4 +159,37 @@ function showMarketSidebarDetail(data){
   // $24h_number_container.append($24h_sign, $24h_gain);
   // $24h_container.append($24h_number_container, $24h_gain_text);
   // $sidebarData.append($24h_container);
+}
+
+function showHomeSidebar(){
+  clearDetailbar();
+  //set up header
+  let $sidebarHeader = $('.sidebar-header');
+  $sidebarHeader.empty();
+  $title = $("<h1> Crypto Bubbles </h1>");
+  $sidebarHeader.append($title);
+
+  //set up intro info
+  var githubLink = "https://github.com/adithepnarula";
+  var portfolioLink = "www.adithep.com";
+
+  let $sidebarIntro = $('.sidebar-intro');
+  $sidebarIntro.empty();
+
+  $info1 = $("<p> Crypto Bubbles is a crytoccurency visualization built on D3. More specifically, it visualizes the market cap and price volatility of 65 cryptocurrencies.</p>");
+  $info2 = $("<p> Cryptocurrencies have illustrated how technology can fundamentally disrupt our current financial system of notes, coins, commercial and central banks. Keep a close eye on bitcoins and other cryptocurrencies in the coming years! </p>");
+  $creatorContainer = $(`<div class="creator-container"> </div>`);
+  $creator = $("<h3> Created by Adithep Narula</h3>");
+  $github = $(`<div class="user-links-container"> <a class="user-links" target="_blank" href="${githubLink}">Github</a><div>`);
+  $portfolio = $(`<div class="user-links-container"> <a class="user-links" target="_blank" href="www.adithep.com">Portfolio</a> <div>`);
+
+  $creatorContainer.append($creator);
+  $creatorContainer.append($github);
+  $creatorContainer.append($portfolio);
+
+
+  $sidebarIntro.append($info1);
+  $sidebarIntro.append($info2);
+  $sidebarIntro.append($creatorContainer);
+
 }

@@ -153,6 +153,22 @@
   /* box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.25), 0 1px 5px rgba(0, 0, 0, 0.15); */
 }
 
+.user-links{
+  text-decoration: underline;
+  color: white;
+  cursor: pointer;
+}
+
+.user-links-container{
+  margin-top: 10px;
+}
+
+.creator-container{
+  color: white;
+  position: relative;
+  top: 100px;
+}
+
 .button-search {
   float: left;
   width: 1.75em;

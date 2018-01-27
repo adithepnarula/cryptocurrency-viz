@@ -78,8 +78,8 @@ function bubbleChart(){
 
   var fillColor = d3.scaleOrdinal()
     .domain(['low', 'medium', 'high', 'circle',
-  'blue'])
-    .range(['#d84b2a', '#beccae', '#7aa25c','#000000','#61AFEF']);
+  'blue','orange'])
+    .range(['#d84b2a', '#beccae', '#7aa25c','#000000','#61AFEF', '#c9b732']);
 
 
   function createNodes(rawData){
@@ -151,7 +151,7 @@ function bubbleChart(){
 
     // Set initial layout to single group.
     // groupBubbles();
-    marketBubbles();
+    groupBubbles();
 
 
     //ajax call will update bubbles everything regardless
@@ -203,7 +203,6 @@ function bubbleChart(){
   };
 
   function ticked(e) {
-    // console.log('ticked is called');
     bubbles
       .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; });
@@ -221,13 +220,14 @@ function bubbleChart(){
       clearDetailbar();
     } else if(displayName === 'market'){
       state = 'market';
-      // groupBubbles();
       marketBubbles();
       showMarketSidebar();
       clearDetailbar();
     } else if(displayName === 'home'){
       state = 'home';
       groupBubbles();
+      showHomeSidebar();
+      clearDetailbar();
     }
   };
 
@@ -243,7 +243,7 @@ function bubbleChart(){
     simulation.alpha(1).restart(); //reset alpha to restart simulation
 
     var bubblesE = svg.selectAll('circle')
-      .attr('stroke', d3.rgb(fillColor('blue')).darker());
+      .attr('stroke', d3.rgb(fillColor('orange')).darker());
   }
 
   function percentBubbles() {
@@ -292,9 +292,12 @@ function bubbleChart(){
           return d3.rgb(fillColor('low')).darker();
         }
       });
-    }else{
+    }else if(state === 'market'){
       d3.select(this)
         .attr('fill', d3.rgb(fillColor('blue')).darker());
+    }else if(state === 'home'){
+      d3.select(this)
+        .attr('fill', d3.rgb(fillColor('orange')).darker());
     }
     var content = '<span class="name">' + d.name +'</span><br/>' +
                   '<span class="value">$' + addCommas(d.price) +'</span><br/>';
@@ -335,9 +338,8 @@ function bubbleChart(){
 var myBubbleChart = bubbleChart(); //chart gets returned
 //need to set to global var because it has toggleDisplay property
 
-
 var numCryptos = 65;
-var state = 'market'; //set state on what to show
+var state = 'home'; //set state on what to show
 
 //keep track of the higest gain and highest loss every 30 seconds
 var highestPercentGain = null;
