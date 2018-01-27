@@ -219,12 +219,15 @@ function bubbleChart(){
       percentBubbles();
       showPercentSidebar();
       clearDetailbar();
-    } else {
+    } else if(displayName === 'market'){
       state = 'market';
       // groupBubbles();
       marketBubbles();
       showMarketSidebar();
       clearDetailbar();
+    } else if(displayName === 'home'){
+      state = 'home';
+      groupBubbles();
     }
   };
 
