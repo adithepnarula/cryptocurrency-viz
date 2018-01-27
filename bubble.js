@@ -95,7 +95,7 @@ function bubbleChart(){
         market_cap: d.market_cap_usd,
         radius: radiusScale(market_cap_rounded),
         price: d.price_usd,
-        percent_change_10s: d.percent_change_1h,
+        percent_change_10s: d.percent_change_1h, //need to change to 10s
         percent_change_1h: d.percent_change_1h,
         percent_change_24h: d.percent_change_24h,
         percent_change_7d: d.percent_change_7d,
@@ -275,6 +275,8 @@ function bubbleChart(){
 
 
 
+
+
   /*
    * Function called on mouseover to display the
    * details of a bubble in the tooltip.
@@ -352,7 +354,7 @@ function display(error, data){
   data = data.slice(0, numCryptos); //get 65 cryptos
   pricePath = priceUrlPath(data);
   let updateNodes = myBubbleChart('#chart', data); //display
-  updateNodes(pricePath,data); //update price every 10 seconds
+  updateNodes(pricePath,data); //update price every 30 seconds
 }
 
 
@@ -372,6 +374,7 @@ function priceUrlPath(rawData){
 
 
 d3.json('https://api.coinmarketcap.com/v1/ticker/', display);
+// d3.json('https://api.coinmarketcap.com/v1/ticker/', getCurrentPrice);
 
 
 

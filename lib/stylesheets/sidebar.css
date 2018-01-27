@@ -5,7 +5,7 @@
   background-color: #3B4048;
   color:white;
   display: grid;
-  grid-template-rows: 80px 220px 420px auto;
+  grid-template-rows: 80px 300px auto;
   align-items: center;
 
 }
